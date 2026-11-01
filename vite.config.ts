@@ -15,7 +15,7 @@ const hash = (input: string): string =>
    что сгенерировано при прямом импорте модуля. */
 const generateScopedName = (name: string, filename: string): string => {
   const parts = filename.split('?')[0].replace(/\\/g, '/').split('/');
-  const baseFilename = (parts.pop() ?? '').replace(/(\.module)?\.\w+$/, '');
+  const baseFilename = (parts.pop() || '').replace(/(\.module)?\.\w+$/, '');
   const className = `${baseFilename}__${name}`;
 
   return `${className}_${hash(`${hash(parts.join('/'))}-${className}`)}`;
@@ -36,7 +36,7 @@ export default defineConfig(({ mode }) => {
       modules: { generateScopedName }
     },
     define: {
-      'process.env.BURGER_API_URL': JSON.stringify(env.BURGER_API_URL ?? '')
+      'process.env.BURGER_API_URL': JSON.stringify(env.BURGER_API_URL || '')
     },
     server: {
       open: true
