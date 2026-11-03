@@ -6,6 +6,7 @@ import { addIngredient } from '../../services/slices/constructorSlice';
 import { useDispatch } from '../../services/store';
 
 import type { TBurgerIngredientProps } from './type';
+
 export const BurgerIngredient = memo(function BurgerIngredient({
   ingredient,
   count,
@@ -14,7 +15,7 @@ export const BurgerIngredient = memo(function BurgerIngredient({
   const dispatch = useDispatch();
 
   const handleAdd = (): void => {
-    dispatch(addIngredient(ingredient));
+    void dispatch(addIngredient(ingredient));
   };
 
   return (

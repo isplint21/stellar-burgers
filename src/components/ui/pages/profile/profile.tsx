@@ -12,8 +12,6 @@ export const ProfileUI = ({
   handleSubmit,
   handleCancel,
   handleInputChange,
-  savedField,
-  emailError,
 }: ProfileUIProps): React.JSX.Element => (
   <main className={styles.container}>
     <div className={`mt-30 mr-15 ${styles.menu}`}>
@@ -27,21 +25,12 @@ export const ProfileUI = ({
           onChange={handleInputChange}
           value={formValue.name}
           name={'name'}
-          error={savedField === 'name'}
+          error={false}
           errorText={''}
           size={'default'}
           icon={'EditIcon'}
         />
-        {savedField === 'name' && (
-          <p
-            className="text text_type_main-default text_color_error mt-2"
-            style={{ textAlign: 'center' }}
-          >
-            Изменения сохранены!
-          </p>
-        )}
       </div>
-
       <div className="pb-6">
         <Input
           type={'email'}
@@ -49,26 +38,11 @@ export const ProfileUI = ({
           onChange={handleInputChange}
           value={formValue.email}
           name={'email'}
-          error={emailError || savedField === 'email'}
+          error={false}
           errorText={''}
           size={'default'}
           icon={'EditIcon'}
         />
-        {emailError ? (
-          <p
-            className="text text_type_main-default text_color_error mt-2"
-            style={{ textAlign: 'center' }}
-          >
-            Ой, произошла ошибка!
-          </p>
-        ) : savedField === 'email' ? (
-          <p
-            className="text text_type_main-default text_color_error mt-2"
-            style={{ textAlign: 'center' }}
-          >
-            Изменения сохранены!
-          </p>
-        ) : null}
       </div>
       <div className="pb-6">
         <Input
@@ -77,19 +51,11 @@ export const ProfileUI = ({
           onChange={handleInputChange}
           value={formValue.password}
           name={'password'}
-          error={savedField === 'password'}
+          error={false}
           errorText={''}
           size={'default'}
           icon={'EditIcon'}
         />
-        {savedField === 'password' && (
-          <p
-            className="text text_type_main-default text_color_error mt-2"
-            style={{ textAlign: 'center' }}
-          >
-            Изменения сохранены!
-          </p>
-        )}
       </div>
 
       {isFormChanged && (

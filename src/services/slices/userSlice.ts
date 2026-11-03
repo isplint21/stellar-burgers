@@ -18,6 +18,7 @@ type TUserState = {
   isAuth: boolean;
   isLoading: boolean;
   error: string | null;
+  isAuthChecked: boolean;
 };
 
 const initialState: TUserState = {
@@ -25,6 +26,7 @@ const initialState: TUserState = {
   isAuth: false,
   isLoading: false,
   error: null,
+  isAuthChecked: false,
 };
 
 export const registerUser = createAsyncThunk(
@@ -70,6 +72,9 @@ export const userSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    checkAuth: (state) => {
+      state.isAuthChecked = true;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -101,9 +106,18 @@ export const userSlice = createSlice({
         state.error = action.error.message ?? 'Ошибка входа';
       })
 
+      .addCase(getUser.pending, (state) => {
+        state.isAuthChecked = false;
+      })
       .addCase(getUser.fulfilled, (state, action) => {
         state.user = action.payload;
         state.isAuth = true;
+        state.isAuthChecked = true;
+      })
+      .addCase(getUser.rejected, (state) => {
+        state.user = null;
+        state.isAuth = false;
+        state.isAuthChecked = true;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.user = action.payload;
@@ -116,12 +130,13 @@ export const userSlice = createSlice({
   },
 });
 
-export const { clearError } = userSlice.actions;
 export const userReducer = userSlice.reducer;
-
+export const { clearError, checkAuth } = userSlice.actions;
 export const selectUser = (state: { user: TUserState }): TUser | null => state.user.user;
 export const selectIsAuth = (state: { user: TUserState }): boolean => state.user.isAuth;
 export const selectUserLoading = (state: { user: TUserState }): boolean =>
   state.user.isLoading;
 export const selectUserError = (state: { user: TUserState }): string | null =>
   state.user.error;
+export const selectIsAuthChecked = (state: { user: TUserState }): boolean =>
+  state.user.isAuthChecked;

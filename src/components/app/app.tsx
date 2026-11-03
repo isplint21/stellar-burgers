@@ -20,9 +20,8 @@ import {
   selectIsIngredientsLoading,
   selectIngredientsError,
 } from '../../services/slices/ingredientsSlice';
-import { getUser } from '../../services/slices/userSlice';
+import { getUser, checkAuth } from '../../services/slices/userSlice';
 import { useDispatch, useSelector } from '../../services/store'; // наши типизированные хуки
-import { getCookie } from '../../utils/cookie';
 import { ProtectedRoute } from '../protected-route';
 
 import type { AppContentProps } from './type';
@@ -40,9 +39,11 @@ const App = (): React.JSX.Element => {
 
   useEffect(() => {
     void dispatch(fetchIngredients());
-    const token = getCookie('accessToken');
+    const token = localStorage.getItem('refreshToken');
     if (token) {
       void dispatch(getUser());
+    } else {
+      dispatch(checkAuth());
     }
   }, [dispatch]);
 
@@ -99,10 +100,38 @@ const RouteComponent = (): React.JSX.Element => {
         <Route path="/" element={<ConstructorPage />} />
         <Route path="/feed" element={<Feed />} />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route
+          path="/login"
+          element={
+            <ProtectedRoute onlyUnAuth>
+              <Login />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <ProtectedRoute onlyUnAuth>
+              <Register />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <ProtectedRoute onlyUnAuth>
+              <ForgotPassword />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <ProtectedRoute onlyUnAuth>
+              <ResetPassword />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/profile"
           element={
@@ -155,9 +184,11 @@ const RouteComponent = (): React.JSX.Element => {
           <Route
             path="/profile/orders/:number"
             element={
-              <Modal title="Информация о заказе" onClose={handleCloseModal}>
-                <OrderInfo />
-              </Modal>
+              <ProtectedRoute>
+                <Modal title="Информация о заказе" onClose={handleCloseModal}>
+                  <OrderInfo />
+                </Modal>
+              </ProtectedRoute>
             }
           />
         </Routes>
